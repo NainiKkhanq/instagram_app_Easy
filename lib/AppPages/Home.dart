@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:badges/badges.dart' as badges;
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,10 +13,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  String encodedURL = "";
   int currentPage = 1;
 
-  Map<String,dynamic> pIMG={
-    'img':[ 'images/1.png',
+  Map<String, dynamic> pIMG = {
+    'img': [
+      'images/1.png',
       'images/2.jpg',
       'images/3.jpg',
       'images/4.jpg',
@@ -23,18 +29,21 @@ class _HomePageState extends State<HomePage> {
       'images/7.jpg',
       'images/8.jpg',
       'images/9.jpg',
-      'images/10.jpg',],
-    'names':[ 'Ali',
-        'Ahmed',
-        'Saifullah',
-        'Bashir',
-        'Hassan',
-        'Joseph',
-        'Usman',
-        'Khawar',
-        'Mohid',
-        'Jameel',],
-    'posts':[
+      'images/10.jpg',
+    ],
+    'names': [
+      'Ali',
+      'Ahmed',
+      'Saifullah',
+      'Bashir',
+      'Hassan',
+      'Joseph',
+      'Usman',
+      'Khawar',
+      'Mohid',
+      'Jameel',
+    ],
+    'posts': [
       'images/p1.jpg',
       'images/p2.jpg',
       'images/p3.jpeg',
@@ -45,7 +54,6 @@ class _HomePageState extends State<HomePage> {
       'images/p8.jpg',
       'images/p9.jpg',
       'images/p10.jpg',
-     
     ]
   };
 
@@ -58,35 +66,60 @@ class _HomePageState extends State<HomePage> {
   //
   // ];
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Row(children: [SvgPicture.asset('images/ic_instagram.svg',height: 35,width: 35,color: Colors.white,),
-       const SizedBox(width: 5,),
-          const Icon(Icons.expand_more_sharp,color: Colors.white,)
-        ],),
-
-        actions:const [
+        title: Row(
+          children: [
+            SvgPicture.asset(
+              'images/ic_instagram.svg',
+              height: 35,
+              width: 35,
+              color: Colors.white,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            const Icon(
+              Icons.expand_more_sharp,
+              color: Colors.white,
+            )
+          ],
+        ),
+        actions: const [
           badges.Badge(
-            badgeContent: Text(".",style: TextStyle(fontSize: 12,color: Colors.red),),
-            child: Icon(Icons.favorite_border,color: Colors.white,size: 28,),
-
+            badgeContent: Text(
+              ".",
+              style: TextStyle(fontSize: 12, color: Colors.red),
+            ),
+            child: Icon(
+              Icons.favorite_border,
+              color: Colors.white,
+              size: 28,
+            ),
           ),
-          SizedBox(width: 18,),
+          SizedBox(
+            width: 18,
+          ),
           badges.Badge(
-            badgeContent: Text("4",style: TextStyle(fontSize: 12,color: Colors.white)),
-            child: Icon(Icons.mail,color: Colors.white,size: 28,),
-
+            badgeContent:
+                Text("4", style: TextStyle(fontSize: 12, color: Colors.white)),
+            child: Icon(
+              Icons.mail,
+              color: Colors.white,
+              size: 28,
+            ),
           ),
-          SizedBox(width: 18,),
+          SizedBox(
+            width: 18,
+          ),
         ],
       ),
       bottomNavigationBar: bottomBar(),
-      body:SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             // STORY
-
 
             SizedBox(
               height: 100,
@@ -95,67 +128,132 @@ class _HomePageState extends State<HomePage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: pIMG['names'].length,
                   itemBuilder: (context, index) {
-                  return
-                    Column(
+                    return Column(
                       children: [
                         Container(
                           padding: const EdgeInsets.all(10),
-                          child: CircleAvatar(backgroundImage:const AssetImage('images/instastory.png'),
+                          child: CircleAvatar(
+                            backgroundImage:
+                                const AssetImage('images/instastory.png'),
                             radius: 26,
-                            child: CircleAvatar(backgroundImage:  AssetImage(pIMG['img'][index],),radius: 25,),
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage(
+                                pIMG['img'][index],
+                              ),
+                              radius: 25,
+                            ),
                           ),
                         ),
-                        Text(pIMG['names'][index],style: const TextStyle(color: Colors.white,fontSize: 12),)
+                        Text(
+                          pIMG['names'][index],
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 12),
+                        )
                       ],
                     );
-
-                },),
+                  },
+                ),
               ),
             ),
 
-           Divider(),
-              Column(
-                children: List.generate(pIMG['names'].length, (index) => Container(
-
-                  padding: const EdgeInsets.all(10),
-                  child: Column(children: [
+            Divider(),
+            Column(
+                children: List.generate(
+              pIMG['names'].length,
+              (index) => Container(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
                     Row(
-
                       children: [
-                      CircleAvatar(backgroundImage:  AssetImage(pIMG['img'][index],),radius: 18,),
-                        const SizedBox(width: 10,),
-                        Text(pIMG['names'][index]+'. ',style: const TextStyle(color: Colors.white,fontSize: 10),),
-                        const Text('3 day',style: TextStyle(color: Colors.grey,fontSize: 10),),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                            pIMG['img'][index],
+                          ),
+                          radius: 18,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          pIMG['names'][index] + '. ',
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 10),
+                        ),
+                        const Text(
+                          '3 day',
+                          style: TextStyle(color: Colors.grey, fontSize: 10),
+                        ),
                         const Spacer(),
-                        const Icon(Icons.more_horiz,color: Colors.white,size: 20,),
-
-                    ],),
-                    const SizedBox(height: 10,),
-                     Image.asset(pIMG['posts'][index]),
-                    const SizedBox(height: 6,),
-
-                       Row(children: [
-                         const Icon(Icons.favorite_border,color: Colors.white,),
-                         const SizedBox(width: 6,),
-                         const  Icon(Icons.chat_bubble_sharp,color: Colors.white,),
-                         const  SizedBox(width: 6,),
-                         const   Icon(Icons.send_sharp,color:Colors.white,),
-                         const    Spacer(),
-                      IconButton(onPressed: (){}, icon: const Icon(Icons.bookmark,color: Colors.white,)),
-
-                    ],)
-
-                  ],),
-                ),)
-              )
+                        const Icon(
+                          Icons.more_horiz,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Image.asset(pIMG['posts'][index]),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.favorite_border,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        const Icon(
+                          Icons.chat_bubble_sharp,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        const Icon(
+                          Icons.send_sharp,
+                          color: Colors.white,
+                        ),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.bookmark,
+                              color: Colors.white,
+                            )),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ))
           ],
         ),
       ),
     );
-
   }
 
-  Widget bottomBar(){
+  Widget bottomBar() {
+    String IMGURL = '';
+    _firebaseFirestore
+        .collection("Users")
+        .doc(_auth.currentUser!.uid.toString())
+        .get()
+        .then(
+      (snapshot) {
+        setState(() {
+          IMGURL = snapshot.data()!['PROFILE_IMG'];
+          encodedURL = Uri.encodeFull(IMGURL);
+          print(IMGURL);
+        });
+      },
+    );
+
     return BottomAppBar(
       height: 65,
       color: Colors.black,
@@ -163,56 +261,78 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
-
-
-
           GestureDetector(
-              onTap: (){
+              onTap: () {
                 setState(() {
+                  print(IMGURL);
                   currentPage = 1;
                   print("HoMe");
                 });
               },
-              child: Icon(currentPage==1?Icons.home:Icons.home_outlined,color: Colors.white,size: 30,)),
+              child: Icon(
+                currentPage == 1 ? Icons.home : Icons.home_outlined,
+                color: Colors.white,
+                size: 30,
+              )),
           GestureDetector(
-            onTap: (){
+            onTap: () {
               setState(() {
                 currentPage = 2;
                 print("HoMe");
               });
             },
-
             child: Padding(
               padding: const EdgeInsets.only(top: 6),
-              child: Icon(currentPage==2?Icons.search:Icons.search_rounded,color: Colors.white,size: 30),
-            ),),
-
-
-
-          IconButton(onPressed: (){
-            setState(() {
-              currentPage = 3;
-            });
-          }, icon: Icon(currentPage==3?Icons.add_box_rounded:Icons.add_box_outlined,color: Colors.white,size: 30)),
-          IconButton(onPressed: (){
-            setState(() {
-              currentPage = 4;
-            });
-          }, icon: Icon(currentPage==4?Icons.movie_creation:Icons.movie_creation_outlined,color: Colors.white,size: 30)),
-
-          IconButton(onPressed: (){
-            setState(() {
-              currentPage = 5;
-            });
-          }, icon:Icon( currentPage==5?Icons.account_circle_sharp:Icons.account_circle_sharp,color: Colors.white,size: 30)),
-
-
-
+              child: Icon(
+                  currentPage == 2 ? Icons.search : Icons.search_rounded,
+                  color: Colors.white,
+                  size: 30),
+            ),
+          ),
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  currentPage = 3;
+                });
+              },
+              icon: Icon(
+                  currentPage == 3
+                      ? Icons.add_box_rounded
+                      : Icons.add_box_outlined,
+                  color: Colors.white,
+                  size: 30)),
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  currentPage = 4;
+                });
+              },
+              icon: Icon(
+                  currentPage == 4
+                      ? Icons.movie_creation
+                      : Icons.movie_creation_outlined,
+                  color: Colors.white,
+                  size: 30)),
+          IMGURL != null
+              ? CircleAvatar(
+                radius: 18,
+                backgroundImage: NetworkImage(IMGURL),)
+              : IconButton(
+                  onPressed: () {
+                    setState(() {
+                      currentPage = 5;
+                    });
+                  },
+                  icon: Icon(
+                      currentPage == 5
+                          ? Icons.account_circle_sharp
+                          : Icons.account_circle_sharp,
+                      color: Colors.white,
+                      size: 30)),
         ],
       ),
     );
-}
+  }
 
 // Listview.Generate using method
 
